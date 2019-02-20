@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.agilean.lessons.hook.JVMShutDownHook;
 import com.agilean.lessons.json.BaseMessage;
 
 
@@ -26,6 +27,13 @@ public class GrantController {
 	    		+ "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
 	    		+ "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 	    log.info(result);
+	    new JVMShutDownHook(); 
+	    try { 
+	        Thread.sleep(35000);     // give u the time to try ctrl-C 
+	    } catch (InterruptedException ie) { 
+	        ie.printStackTrace(); 
+	    } 
+	            System.out.println(">>> Sleeping for 35 seconds, try ctrl-C now if you like."); 
 	    return res;
 	}
 }

@@ -1,8 +1,9 @@
 package com.agilean.lessons.hook.concurrent;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
-public class CompleteReminderer implements Runnable {
+public class CompleteReminderer implements Callable<ResultBean> {
 	private CountDownLatch  countDownLatch;
    
 	public CompleteReminderer(CountDownLatch countDownLatch) {
@@ -11,7 +12,8 @@ public class CompleteReminderer implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public ResultBean call() {
+		ResultBean rb=new ResultBean();
 		try {
 			this.countDownLatch.await();
 		}catch(Exception e) {
@@ -19,6 +21,9 @@ public class CompleteReminderer implements Runnable {
 		}
 		
 		System.out.println(">>>>Done<<<<");
+		rb.setName("reminder");
+		rb.setResult("REMINDER");
+		return rb;
 
 	}
 
