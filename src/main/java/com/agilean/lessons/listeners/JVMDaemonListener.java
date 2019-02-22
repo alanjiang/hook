@@ -1,11 +1,16 @@
 package com.agilean.lessons.listeners;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.agilean.lessons.hook.JVMShutDownHook;
 
@@ -15,16 +20,15 @@ public class JVMDaemonListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		System.out.println(">>>>>>contextInitialized<<<<");
+		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(sce.getServletContext());
+		ThreadPoolExecutor threadPoolExecutor=ctx.getBean(ThreadPoolExecutor.class);
+		PoolingHttpClientConnectionManager httpPool=ctx.getBean(PoolingHttpClientConnectionManager.class);
+		
+		System.out.println("--web 监听器启动---");
 
-         
-        try { 
-            Thread.sleep(35000);     // (-: give u the time to try ctrl-C 
-        } catch (InterruptedException ie) { 
-            ie.printStackTrace(); 
-        } 
-         
-        System.out.println(">>>thread exited."); 
+		 new JVMShutDownHook(threadPoolExecutor,httpPool); 
+        
+         System.out.println("--JVM 钩子函数注册成功---"); 
 
 	}
 
